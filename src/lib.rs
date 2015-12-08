@@ -79,17 +79,20 @@ impl DB {
         }
     }
 
-    pub fn set(&mut self, key: &str, value: &str) -> bool {
+    pub fn set_bytes(&mut self, key: &str, value: &[u8]) -> bool {
         unsafe {
             let _key = CString::new(key).unwrap();
-            let _value = CString::new(value).unwrap();
             kcdbset(self.kcdb,
                     _key.as_ptr(), key.len(),
-                    _value.as_ptr(), value.len()) != 0
+                    value.as_ptr() as *const i8, value.len()) != 0
         }
     }
 
-    pub fn get_vec(&mut self, key: &str) -> Option<Vec<u8>> {
+    pub fn set(&mut self, key: &str, value: &str) -> bool {
+        self.set_bytes(key, value.as_bytes())
+    }
+    
+    pub fn get_bytes(&mut self, key: &str) -> Option<Vec<u8>> {
         let mut sp: usize = 0;
         let _key = CString::new(key).unwrap();
         let c_val = unsafe { kcdbget(self.kcdb, _key.as_ptr(), key.len(), &mut sp) };
@@ -105,7 +108,7 @@ impl DB {
     }
 
     pub fn get(&mut self, key: &str) -> Option<String> {
-        match self.get_vec(key) {
+        match self.get_bytes(key) {
             None => None,
             Some(vec_u8) => {
                 unsafe { Some(String::from_utf8_unchecked(vec_u8)) }
