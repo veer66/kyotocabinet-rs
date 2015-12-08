@@ -3,14 +3,12 @@ name = "kyotocabinet"
 version = "0.0.1"
 authors = ["Vee Satayamas <vsatayamas@gmail.com>"]
 description = "Kyotocabinet binding"
-documentation = "https://github.com/veer66/kyotocabinet/blob/master/README.md"
-homepage = "https://github.com/veer66/kyotocabinet/"
-repository = "https://github.com/veer66/kyotocabinet.git"
+documentation = "https://github.com/veer66/kyotocabinet-rs/blob/master/README.md"
+homepage = "https://github.com/veer66/kyotocabinet-rs/"
+repository = "https://github.com/veer66/kyotocabinet-rs.git"
 readme = "README.md"
 keywords = ["kyotocabinet", "database"]
 license = "LGPL-3.0"
-#links = "kyotocabinet"
-#build = "build.rs"
 
 [lib]
 name = "kyotocabinet"
