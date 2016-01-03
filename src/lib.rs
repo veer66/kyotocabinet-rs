@@ -1,3 +1,5 @@
+#![feature(unique)]
+
 extern crate libc;
 use libc::*;
 use std::ffi::{CString, CStr};
@@ -5,11 +7,14 @@ use std::str;
 use std::fmt::Display;
 use std::fmt;
 use std::slice;
+use std::ptr::Unique;
 
-#[repr(C)]
-pub struct KCDB {
-    pub db: *mut c_void
-}
+//#[repr(C)]
+//pub struct KCDB {
+ //   pub db: *mut c_void
+//}
+
+pub type KCDB = c_void;
 
 pub enum Mode {
     READER = 1 << 0,
@@ -24,7 +29,7 @@ pub enum Mode {
 }
 
 #[link(name = "kyotocabinet")]
-extern {
+extern "C" {
     pub fn kcdbnew() -> *mut KCDB;
     pub fn kcdbdel(db: *mut KCDB);
     pub fn kcdbopen(db: *mut KCDB, path: *const c_char, mode: uint32_t) -> int32_t;
@@ -55,7 +60,7 @@ impl Display for KCError {
 }
 
 pub struct DB {
-    kcdb: *mut KCDB
+    kcdb: Unique<c_void>
 }
 
 impl DB {
@@ -74,14 +79,14 @@ impl DB {
                 Err(KCError{kind: KCErrorType::OPEN,
                             msg: msg})
             } else {
-                Ok(DB {kcdb: db})
+                Ok(DB {kcdb: Unique::new(db as *mut c_void)})
             }
         }
     }
 
     pub fn set_bytes(&mut self, key: &[u8], value: &[u8]) -> bool {
         unsafe {
-            kcdbset(self.kcdb,
+            kcdbset(*self.kcdb,
                     key.as_ptr() as *const i8, key.len(),
                     value.as_ptr() as *const i8, value.len()) != 0
         }
@@ -94,7 +99,7 @@ impl DB {
     pub fn get_bytes(&mut self, key: &[u8]) -> Option<Vec<u8>> {
         let mut sp: usize = 0;
         let c_val = unsafe {
-            kcdbget(self.kcdb,
+            kcdbget(*self.kcdb,
                     key.as_ptr() as *const i8,
                     key.len(),
                     &mut sp)
@@ -123,8 +128,8 @@ impl DB {
 impl Drop for DB {
     fn drop(&mut self) {
         unsafe {
-            kcdbclose(self.kcdb);
-            kcdbdel(self.kcdb);            
+            kcdbclose(*self.kcdb);
+            kcdbdel(*self.kcdb);            
         }
     }
 }

@@ -1,6 +1,6 @@
 [package]
 name = "kyotocabinet"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Vee Satayamas <vsatayamas@gmail.com>"]
 description = "Kyotocabinet binding"
 documentation = "https://github.com/veer66/kyotocabinet-rs/blob/master/README.md"
