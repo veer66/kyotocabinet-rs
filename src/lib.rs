@@ -37,7 +37,7 @@ extern "C" {
     pub fn kcdbemsg(db: *mut KCDB) -> *const c_char;
     pub fn kcdbset(db: *mut KCDB, kbuf: *const c_char, ksiz: size_t ,
                    vbuf: *const c_char, vsiz: size_t) -> int32_t;
-    pub fn kcdbget(db: *mut KCDB, kbuf: *const c_char,
+    pub fn kcdbget(db: *const KCDB, kbuf: *const c_char,
                    ksiz: size_t, sp: *mut size_t) -> *mut c_char;
 }
 
@@ -48,7 +48,7 @@ pub enum KCErrorType {
 
 pub struct KCError {
     pub kind: KCErrorType,
-    pub msg: String        
+    pub msg: String
 }
 
 impl Display for KCError {
@@ -95,8 +95,8 @@ impl DB {
     pub fn set(&mut self, key: &str, value: &str) -> bool {
         self.set_bytes(key.as_bytes(), value.as_bytes())
     }
-    
-    pub fn get_bytes(&mut self, key: &[u8]) -> Option<Vec<u8>> {
+
+    pub fn get_bytes(&self, key: &[u8]) -> Option<Vec<u8>> {
         let mut sp: usize = 0;
         let c_val = unsafe {
             kcdbget(*self.kcdb,
@@ -129,7 +129,7 @@ impl Drop for DB {
     fn drop(&mut self) {
         unsafe {
             kcdbclose(*self.kcdb);
-            kcdbdel(*self.kcdb);            
+            kcdbdel(*self.kcdb);
         }
     }
 }
