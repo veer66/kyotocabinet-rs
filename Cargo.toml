@@ -13,6 +13,7 @@ license = "LGPL-3.0"
 [lib]
 name = "kyotocabinet"
 path = "src/lib.rs"
+crate-type = ["rlib"]
 
 [dependencies]
 libc = "0.2.2"
