@@ -1,6 +1,6 @@
 [package]
 name = "kyotocabinet"
-version = "0.0.5"
+version = "0.0.6"
 authors = ["Vee Satayamas <vsatayamas@gmail.com>"]
 description = "Kyotocabinet binding"
 documentation = "https://github.com/veer66/kyotocabinet-rs/blob/master/README.md"
@@ -8,7 +8,7 @@ homepage = "https://github.com/veer66/kyotocabinet-rs/"
 repository = "https://github.com/veer66/kyotocabinet-rs.git"
 readme = "README.md"
 keywords = ["kyotocabinet", "database"]
-license = "GPL-3.0"
+license = "LGPL-3.0"
 
 [lib]
 name = "kyotocabinet"
